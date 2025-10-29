@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - User Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .login-wrapper {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .login-header h1 {
+            color: #333;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #777;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input.error {
+            border-color: #e74c3c;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 45px;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            user-select: none;
+            font-size: 1.2rem;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+
+        .toggle-password:hover {
+            opacity: 1;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            min-height: 20px;
+            display: block;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            color: #555;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .forgot-password {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .register-link p {
+            color: #777;
+            font-size: 0.95rem;
+        }
+
+        .register-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .register-link a:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .login-wrapper {
+                padding: 30px 25px;
+            }
+
+            .login-header h1 {
+                font-size: 1.6rem;
+            }
+
+            .form-options {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+        }
+
+        .btn-login.loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .btn-login.loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+
+            0%,
+            20% {
+                content: '.';
+            }
+
+            40% {
+                content: '..';
+            }
+
+            60%,
+            100% {
+                content: '...';
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="login-wrapper">
+            <div class="login-header">
+                <h1>Welcome Back</h1>
+                <p>Login to access your account</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="userId">User ID</label>
+                    <input type="text" id="userId" name="userId" required autofocus>
+                    <span class="error-message"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" name="password" required>
+                        <span class="toggle-password" id="togglePassword"></span>
+                    </div>
+                    <span class="error-message"></span>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="forgot-password">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn btn-login">Login</button>
+            </form>
+
+            <div class="register-link">
+                <p>Don't have an account? <a href="registration.html">Register here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const loginForm = document.getElementById('loginForm');
+            const userIdInput = document.getElementById('userId');
+            const passwordInput = document.getElementById('password');
+            const togglePassword = document.getElementById('togglePassword');
+            const rememberMeCheckbox = document.getElementById('rememberMe');
+
+            // Check if user is already logged in
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (currentUser) {
+                window.location.href = 'dashboard.html';
+            }
+
+            // Check for remembered user
+            const rememberedUser = localStorage.getItem('rememberedUser');
+            if (rememberedUser) {
+                userIdInput.value = rememberedUser;
+                rememberMeCheckbox.checked = true;
+            }
+
+            // Toggle password visibility
+            togglePassword.addEventListener('click', function () {
+                const type = passwordInput.type === 'password' ? 'text' : 'password';
+                passwordInput.type = type;
+                this.textContent = type === 'password' ? '👁️' : '🔒';
+            });
+
+            // Form validation
+            function validateField(field) {
+                const errorSpan = field.nextElementSibling;
+                if (field.classList.contains('password-wrapper')) {
+                    errorSpan = field.parentElement.querySelector('.error-message');
+                }
+
+                let isValid = true;
+                let errorMessage = '';
+
+                if (!field.value.trim()) {
+                    isValid = false;
+                    errorMessage = 'This field is required';
+                }
+
+                if (isValid) {
+                    field.classList.remove('error');
+                    if (errorSpan && errorSpan.classList.contains('error-message')) {
+                        errorSpan.textContent = '';
+                    }
+                } else {
+                    field.classList.add('error');
+                    if (errorSpan && errorSpan.classList.contains('error-message')) {
+                        errorSpan.textContent = errorMessage;
+                    }
+                }
+
+                return isValid;
+            }
+
+            // Real-time validation
+            userIdInput.addEventListener('blur', function () {
+                validateField(this);
+            });
+
+            passwordInput.addEventListener('blur', function () {
+                validateField(this);
+            });
+
+            // Form submission
+            loginForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const userId = userIdInput.value.trim();
+                const password = passwordInput.value;
+
+                // Validate fields
+                const isUserIdValid = validateField(userIdInput);
+                const isPasswordValid = validateField(passwordInput);
+
+                if (!isUserIdValid || !isPasswordValid) {
+                    return;
+                }
+
+                // Get registered users from localStorage
+                const users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+
+                // Find user
+                const user = users.find(u => u.userId.toLowerCase() === userId.toLowerCase());
+
+                if (!user) {
+                    showError(userIdInput, 'User ID not found');
+                    return;
+                }
+
+                if (user.password !== password) {
+                    showError(passwordInput, 'Incorrect password');
+                    return;
+                }
+
+                // Successful login
+                console.log('Login successful!', user);
+
+                // Store current user in session
+                const userSession = {
+                    userId: user.userId,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    gmail: user.gmail,
+                    loginTime: new Date().toISOString()
+                };
+                sessionStorage.setItem('currentUser', JSON.stringify(userSession));
+
+                // Store full user data for dashboard
+                sessionStorage.setItem('userData', JSON.stringify(user));
+
+                // Handle remember me
+                if (rememberMeCheckbox.checked) {
+                    localStorage.setItem('rememberedUser', userId);
+                } else {
+                    localStorage.removeItem('rememberedUser');
+                }
+
+                // Show success message
+                alert('Login successful! Welcome ' + user.firstName + ' ' + user.lastName);
+
+                // Redirect to dashboard
+                window.location.href = 'dashboard.html';
+            });
+
+            function showError(field, message) {
+                field.classList.add('error');
+                const errorSpan = field.parentElement.querySelector('.error-message');
+                if (errorSpan) {
+                    errorSpan.textContent = message;
+                }
+            }
+
+            // Clear error on input
+            userIdInput.addEventListener('input', function () {
+                if (this.classList.contains('error')) {
+                    this.classList.remove('error');
+                    const errorSpan = this.nextElementSibling;
+                    if (errorSpan && errorSpan.classList.contains('error-message')) {
+                        errorSpan.textContent = '';
+                    }
+                }
+            });
+
+            passwordInput.addEventListener('input', function () {
+                if (this.classList.contains('error')) {
+                    this.classList.remove('error');
+                    const errorSpan = this.parentElement.querySelector('.error-message');
+                    if (errorSpan && errorSpan.classList.contains('error-message')) {
+                        errorSpan.textContent = '';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
