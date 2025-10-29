@@ -476,13 +476,11 @@
                     };
                     let users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
 
-                    // Check if userId already exists
                     if (users.some(u => u.userId.toLowerCase() === formData.userId.toLowerCase())) {
                         alert('User ID already exists! Please choose another one.');
                         return;
                     }
 
-                    // Add new user
                     users.push(formData);
 
                     localStorage.setItem('registeredUsers', JSON.stringify(users));
@@ -508,5 +506,4 @@
 
     </script>
 </body>
-
 </html>
