@@ -293,27 +293,23 @@
             const togglePassword = document.getElementById('togglePassword');
             const rememberMeCheckbox = document.getElementById('rememberMe');
 
-            // Check if user is already logged in
             const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
             if (currentUser) {
                 window.location.href = 'dashboard.html';
             }
 
-            // Check for remembered user
             const rememberedUser = localStorage.getItem('rememberedUser');
             if (rememberedUser) {
                 userIdInput.value = rememberedUser;
                 rememberMeCheckbox.checked = true;
             }
 
-            // Toggle password visibility
             togglePassword.addEventListener('click', function () {
                 const type = passwordInput.type === 'password' ? 'text' : 'password';
                 passwordInput.type = type;
                 this.textContent = type === 'password' ? '👁️' : '🔒';
             });
 
-            // Form validation
             function validateField(field) {
                 const errorSpan = field.nextElementSibling;
                 if (field.classList.contains('password-wrapper')) {
@@ -343,7 +339,6 @@
                 return isValid;
             }
 
-            // Real-time validation
             userIdInput.addEventListener('blur', function () {
                 validateField(this);
             });
@@ -352,14 +347,12 @@
                 validateField(this);
             });
 
-            // Form submission
             loginForm.addEventListener('submit', function (e) {
                 e.preventDefault();
 
                 const userId = userIdInput.value.trim();
                 const password = passwordInput.value;
 
-                // Validate fields
                 const isUserIdValid = validateField(userIdInput);
                 const isPasswordValid = validateField(passwordInput);
 
@@ -367,10 +360,8 @@
                     return;
                 }
 
-                // Get registered users from localStorage
                 const users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
 
-                // Find user
                 const user = users.find(u => u.userId.toLowerCase() === userId.toLowerCase());
 
                 if (!user) {
@@ -383,10 +374,8 @@
                     return;
                 }
 
-                // Successful login
                 console.log('Login successful!', user);
 
-                // Store current user in session
                 const userSession = {
                     userId: user.userId,
                     firstName: user.firstName,
@@ -396,20 +385,16 @@
                 };
                 sessionStorage.setItem('currentUser', JSON.stringify(userSession));
 
-                // Store full user data for dashboard
                 sessionStorage.setItem('userData', JSON.stringify(user));
 
-                // Handle remember me
                 if (rememberMeCheckbox.checked) {
                     localStorage.setItem('rememberedUser', userId);
                 } else {
                     localStorage.removeItem('rememberedUser');
                 }
 
-                // Show success message
                 alert('Login successful! Welcome ' + user.firstName + ' ' + user.lastName);
 
-                // Redirect to dashboard
                 window.location.href = 'dashboard.html';
             });
 
@@ -421,7 +406,6 @@
                 }
             }
 
-            // Clear error on input
             userIdInput.addEventListener('input', function () {
                 if (this.classList.contains('error')) {
                     this.classList.remove('error');
